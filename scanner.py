@@ -6,7 +6,7 @@ MAX_NUMBER_OF_FOUR_PLANCE = 3
 MAX_NUMBER_OF_THREE_PLANCE = 5
 MAX_NUMBER_OF_TWO_PLANCE = 30
 MAX_NUMBER_OF_ONE_PLANCE = 20
-
+TOTAL_NUMBER_OF_PLANCE = 50
 
 # Using a class
 class Prenotazione:
@@ -21,7 +21,9 @@ class Tavoli:
         self.number = mynumber
         self.comment = mycomment
 
-listaTavoliìQuadrupli = [] 
+listaTavoliSestupli = [] 
+listaTavoliQuintupli = [] 
+listaTavoliQuadrupli = [] 
 listaTavoliTripli = [] 
 listaTavoliDoppi = [] 
 listaTavoliSingoli = []
@@ -55,8 +57,10 @@ for x in listPrenotazione :
       match x.comment :
         case "salotto"  :
           listPrenotazioneSalotto.append(x)
+          listPrenotazione.remove(x)
         case "Salotto" :
           listPrenotazioneSalotto.append(x)
+          listPrenotazione.remove(x)
 
       if x.comment.find("passeggin") >= 0 or x.comment.find("Passeggin") >= 0 : 
         listaPasseggino.append(x)
@@ -72,11 +76,46 @@ for x in listPrenotazione :
         listPrenotazione.remove(x)
 
 #custom function to get number info
-sorted_list = sorted(listPrenotazione, key=lambda x: x.number, reverse=True)
-#sorted_x = sorted(listPrenotazione, key=operator.attrgetter('number'))
+sorted_list = sorted(listPrenotazione, key=lambda x: x.number, reverse=True) #is sorted starting from the bigger [0] to the smaller [end]
 
-for obj in sorted_list:
-    print(obj.name, obj.number)
+i = int(0)
+
+while( i < sorted_list[i].number >=  40) :
+  listaTavoliSestupli.append(sorted_list[i])
+  sorted_list.remove(sorted_list[i])
+
+while( 40 >= sorted_list[i].number > 32) :
+  listaTavoliQuintupli.append(sorted_list[i])
+  sorted_list.remove(sorted_list[i])
+
+while( 32 >= sorted_list[i].number > 24) :
+  listaTavoliQuadrupli.append(sorted_list[i])
+  sorted_list.remove(sorted_list[i])
+
+while( 24 >= sorted_list[i].number > 16) :
+  listaTavoliTripli.append(sorted_list[i])
+  sorted_list.remove(sorted_list[i])
+
+while( 16 >= sorted_list[i].number > 8) :
+  listaTavoliDoppi.append(sorted_list[i])
+  sorted_list.remove(sorted_list[i])
+
+max = len(sorted_list)
+
+while ( max > 0 and 8 >= sorted_list[0].number > 0) :
+  max = max - 1
+  listaTavoliSingoli.append(sorted_list[0])
+  print(sorted_list[0].name)
+  sorted_list.remove(sorted_list[i])
+
+
+
+
+
+
+
+
+
 
 
           
