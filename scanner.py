@@ -8,6 +8,14 @@ MAX_NUMBER_OF_TWO_PLANCE = 30
 MAX_NUMBER_OF_ONE_PLANCE = 20
 TOTAL_NUMBER_OF_PLANCE = 50
 
+ONE_PLANCIA = 0
+TWO_PLANCE = 1
+THREE_PLANCE = 2
+FOUR_PLANCE = 3
+FIVE_PLANCE = 4
+SIX_PLANCE = 5
+NOT_PLACED = 6
+
 # Using a class
 class Prenotazione:
     def __init__(self, myname, mynumber, mycomment):
@@ -18,16 +26,10 @@ class Prenotazione:
 class Tavoli:
     def __init__(self, myname, mynumber, mycomment):
         self.name = myname
-        self.number = mynumber
+        self.number = int(mynumber)
         self.comment = mycomment
 
-listaTavoliSestupli = [] 
-listaTavoliQuintupli = [] 
-listaTavoliQuadrupli = [] 
-listaTavoliTripli = [] 
-listaTavoliDoppi = [] 
-listaTavoliSingoli = []
-listaTavoli = []
+listaTavoli = [[], [], [], [], [], [], []]
 
 listPrenotazione = [] 
 listPrenotazioneSalotto = []
@@ -76,37 +78,38 @@ for x in listPrenotazione :
         listPrenotazione.remove(x)
 
 #custom function to get number info
-sorted_list = sorted(listPrenotazione, key=lambda x: x.number, reverse=True) #is sorted starting from the bigger [0] to the smaller [end]
+sorted_list = sorted(listPrenotazione, key=lambda x: x.number) #is sorted starting from the bigger [0] to the smaller [end]
 
-i = int(0)
+MAX = [8, 16, 24, 32, 40, 48, 56]
+OFFSET = 6
+MIN = [0, 0, 0, 0, 0, 0, 0, 0]
 
-while( i < sorted_list[i].number >=  40) :
-  listaTavoliSestupli.append(sorted_list[i])
-  sorted_list.remove(sorted_list[i])
+for i in range(7) :
+  MIN[i] = MAX[i] - OFFSET
 
-while( 40 >= sorted_list[i].number > 32) :
-  listaTavoliQuintupli.append(sorted_list[i])
-  sorted_list.remove(sorted_list[i])
+j = 0
+for instance in sorted_list :
+  j += 1
+  i = 0
+  inserted = False 
+  while (i < 7 and inserted == False) :
+    #print(instance.number)
+    if(int(MAX[i]) >= int(instance.number) > int(MIN[i])) :
+       inserted = True
+       listaTavoli[i].append(instance)
+    else :
+        i += 1
 
-while( 32 >= sorted_list[i].number > 24) :
-  listaTavoliQuadrupli.append(sorted_list[i])
-  sorted_list.remove(sorted_list[i])
+  if inserted == False :
+        listaTavoli[NOT_PLACED].append(instance)
 
-while( 24 >= sorted_list[i].number > 16) :
-  listaTavoliTripli.append(sorted_list[i])
-  sorted_list.remove(sorted_list[i])
+for i in range(len(listaTavoli)) : 
+  print(len(listaTavoli[i]))
 
-while( 16 >= sorted_list[i].number > 8) :
-  listaTavoliDoppi.append(sorted_list[i])
-  sorted_list.remove(sorted_list[i])
 
-max = len(sorted_list)
 
-while ( max > 0 and 8 >= sorted_list[0].number > 0) :
-  max = max - 1
-  listaTavoliSingoli.append(sorted_list[0])
-  print(sorted_list[0].name)
-  sorted_list.remove(sorted_list[i])
+
+
 
 
 
