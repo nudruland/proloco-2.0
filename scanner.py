@@ -16,6 +16,12 @@ FIVE_PLANCE = 4
 SIX_PLANCE = 5
 NOT_PLACED = 6
 
+MAX = [8, 16, 24, 32, 40, 48, 56]
+OFFSET_FIRST = 2
+MIN_FIRST_ROUND = [0, 0, 0, 0, 0, 0, 0, 0]
+OFFSET_SECOND = 2
+MIN_SECOND_ROUND = [0, 0, 0, 0, 0, 0, 0, 0]
+
 # Using a class
 class Prenotazione:
     def __init__(self, myname, mynumber, mycomment):
@@ -53,6 +59,8 @@ with open("./proloco/prenotati1.csv", "r") as file:
 
     listPrenotazione.append(myPrenotazione)
 
+print(len(listPrenotazione))
+
 for x in listPrenotazione :
   if x.comment != "NULL" :
       
@@ -80,31 +88,60 @@ for x in listPrenotazione :
 #custom function to get number info
 sorted_list = sorted(listPrenotazione, key=lambda x: x.number) #is sorted starting from the bigger [0] to the smaller [end]
 
-MAX = [8, 16, 24, 32, 40, 48, 56]
-OFFSET = 6
-MIN = [0, 0, 0, 0, 0, 0, 0, 0]
-
 for i in range(7) :
-  MIN[i] = MAX[i] - OFFSET
+  MIN_FIRST_ROUND[i] = MAX[i] - OFFSET_FIRST
+  MIN_SECOND_ROUND[i] = MAX[i] - OFFSET_SECOND
 
-j = 0
 for instance in sorted_list :
-  j += 1
   i = 0
   inserted = False 
   while (i < 7 and inserted == False) :
-    #print(instance.number)
-    if(int(MAX[i]) >= int(instance.number) > int(MIN[i])) :
+    if(int(MAX[i]) >= int(instance.number) >= int(MIN_FIRST_ROUND[i])) :
        inserted = True
        listaTavoli[i].append(instance)
     else :
         i += 1
-
   if inserted == False :
         listaTavoli[NOT_PLACED].append(instance)
 
-for i in range(len(listaTavoli)) : 
-  print(len(listaTavoli[i]))
+listaPrenotati_not_placed_decreasing_order = []
+listaPrenotati_not_placed_decreasing_order = sorted(listaTavoli[NOT_PLACED], key=lambda x: x.number, reverse=True) 
+
+counter_decreasing = 0
+counter_increasing = 0
+print(len(listaTavoli[NOT_PLACED]))
+#listaTavoli[NOT_PLACED] is in increasing order
+
+for instance_increasing in listaTavoli[NOT_PLACED] : 
+  placed = False
+
+  for instance_decreasing in listaPrenotati_not_placed_decreasing_order : 
+    sum = int(instance_decreasing.number) + int(instance_increasing.number)
+    for i in range(len(MAX)) :
+      if(int(MAX[i]) >= int(sum) >= int(MIN_SECOND_ROUND[i])) :
+        #print(instance_decreasing.name, " + ", instance_increasing.name, "  ", instance_increasing.number , instance_decreasing.number, MAX[i], MIN_SECOND_ROUND[i])
+        placed = True
+
+        instance_decreasing.name += (" + " + str(instance_increasing.name))
+        instance_decreasing.number += int(instance_increasing.number)
+        
+        listaTavoli[NOT_PLACED].remove(instance_increasing)
+        listaPrenotati_not_placed_decreasing_order.remove(instance_increasing)
+
+        listaTavoli[i].append(instance_decreasing)
+        #print(listaTavoli[i][len(listaTavoli[i]) - 1].name, listaTavoli[i][len(listaTavoli[i]) - 1].number)
+        
+        listaPrenotati_not_placed_decreasing_order.remove(instance_decreasing)
+        listaTavoli[NOT_PLACED].remove(instance_decreasing)
+        
+        break  
+    if (placed == True) : 
+      break
+
+print(len(listaTavoli[NOT_PLACED]))
+for i in listaTavoli[NOT_PLACED] :
+  print(i.name, i.number)
+
 
 
 
