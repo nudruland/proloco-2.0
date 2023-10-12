@@ -14,7 +14,7 @@ THREE_PLANCE = 2
 FOUR_PLANCE = 3
 FIVE_PLANCE = 4
 SIX_PLANCE = 5
-NOT_PLACED = 6
+NOT_PLACED = 7
 
 MAX = [8, 16, 24, 32, 40, 48, 56]
 OFFSET_FIRST = 2
@@ -35,7 +35,7 @@ class Tavoli:
         self.number = int(mynumber)
         self.comment = mycomment
 
-listaTavoli = [[], [], [], [], [], [], []]
+listaTavoli = [[], [], [], [], [], [], [], []]
 
 listPrenotazione = [] 
 listPrenotazioneSalotto = []
@@ -87,15 +87,16 @@ for x in listPrenotazione :
 
 #custom function to get number info
 sorted_list = sorted(listPrenotazione, key=lambda x: x.number) #is sorted starting from the bigger [0] to the smaller [end]
+len_MAX = len(MAX)
 
-for i in range(7) :
+for i in range(len_MAX) :
   MIN_FIRST_ROUND[i] = MAX[i] - OFFSET_FIRST
   MIN_SECOND_ROUND[i] = MAX[i] - OFFSET_SECOND
 
 for instance in sorted_list :
   i = 0
   inserted = False 
-  while (i < 7 and inserted == False) :
+  while (i < len_MAX and inserted == False) :
     if(int(MAX[i]) >= int(instance.number) >= int(MIN_FIRST_ROUND[i])) :
        inserted = True
        listaTavoli[i].append(instance)
@@ -104,43 +105,33 @@ for instance in sorted_list :
   if inserted == False :
         listaTavoli[NOT_PLACED].append(instance)
 
-listaPrenotati_not_placed_decreasing_order = []
-listaPrenotati_not_placed_decreasing_order = sorted(listaTavoli[NOT_PLACED], key=lambda x: x.number, reverse=True) 
+counter_top = 0
+counter_down = 0
 
-counter_decreasing = 0
-counter_increasing = 0
-print(len(listaTavoli[NOT_PLACED]))
-#listaTavoli[NOT_PLACED] is in increasing order
-
-for instance_increasing in listaTavoli[NOT_PLACED] : 
+for counter_top in range(len(listaTavoli[NOT_PLACED])) : 
   placed = False
-
-  for instance_decreasing in listaPrenotati_not_placed_decreasing_order : 
-    sum = int(instance_decreasing.number) + int(instance_increasing.number)
-    for i in range(len(MAX)) :
-      if(int(MAX[i]) >= int(sum) >= int(MIN_SECOND_ROUND[i])) :
-        #print(instance_decreasing.name, " + ", instance_increasing.name, "  ", instance_increasing.number , instance_decreasing.number, MAX[i], MIN_SECOND_ROUND[i])
+  for counter_down in range(len(listaTavoli[NOT_PLACED]) - 1, -1, -1) : 
+    sum = int(listaTavoli[NOT_PLACED][counter_top].number) + int(listaTavoli[NOT_PLACED][counter_down].number)
+    for i in range(len_MAX) : 
+      if( MAX[i] >= sum >= MIN_SECOND_ROUND[i]) : 
+        new_prenotazione = Prenotazione(str(listaTavoli[NOT_PLACED][counter_top].name) + " + " + str(listaTavoli[NOT_PLACED][counter_down].name), int(listaTavoli[NOT_PLACED][counter_top].number) + int(listaTavoli[NOT_PLACED][counter_down].number), str(listaTavoli[NOT_PLACED][counter_top].comment) + " + " + str(listaTavoli[NOT_PLACED][counter_down].comment))
+        listaTavoli[i].append(new_prenotazione)
+        listaTavoli[NOT_PLACED][counter_down].number = 100
+        listaTavoli[NOT_PLACED][counter_top].number = 100
         placed = True
+        break
+    
+    if (placed == True) :
+       break
+    
+filtered_list = [inst for inst in listaTavoli[NOT_PLACED] if inst.number != 100]
+listaTavoli[NOT_PLACED] = filtered_list
 
-        instance_decreasing.name += (" + " + str(instance_increasing.name))
-        instance_decreasing.number += int(instance_increasing.number)
-        
-        listaTavoli[NOT_PLACED].remove(instance_increasing)
-        listaPrenotati_not_placed_decreasing_order.remove(instance_increasing)
-
-        listaTavoli[i].append(instance_decreasing)
-        #print(listaTavoli[i][len(listaTavoli[i]) - 1].name, listaTavoli[i][len(listaTavoli[i]) - 1].number)
-        
-        listaPrenotati_not_placed_decreasing_order.remove(instance_decreasing)
-        listaTavoli[NOT_PLACED].remove(instance_decreasing)
-        
-        break  
-    if (placed == True) : 
-      break
-
-print(len(listaTavoli[NOT_PLACED]))
-for i in listaTavoli[NOT_PLACED] :
-  print(i.name, i.number)
+for i in range(len(listaTavoli)) : 
+   print("TAVOLI CON " + str(int(i + 1)))
+   for k in range(len(listaTavoli[i])) :
+      print(listaTavoli[i][k].name, listaTavoli[i][k].number)
+      
 
 
 
